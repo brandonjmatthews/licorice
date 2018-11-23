@@ -1,20 +1,28 @@
 #' Centered licorice plot
 #'
 #' @param data_transformed the transformed dataset
+#' @param show_percent should percentages on end of rows be shown
+#' @param question_axis_name name for the question axis if needed
 #' @export
-licorice_center_plot<-function(data_transformed){
+licorice_center_plot<-function(data_transformed, show_percent, question_axis_name){
 
   results_plot_obj<-
     ggplot(data_transformed$main) +
     geom_rect(aes(xmin = as.numeric(question)-.4, xmax = as.numeric(question)+.4, ymin = y_start_center, ymax = y_end_center, fill=response)) +
     geom_hline(yintercept = 0, lty=2) +
-    geom_text(aes(x=as.numeric(question), y=-1.06, label=paste0(round(neg*100), "%")),data=data_transformed$percentages, size=3) +
-    geom_text(aes(x=as.numeric(question), y=1.06, label=paste0(round(pos*100), "%")), data=data_transformed$percentages, size=3) +
+
     coord_flip() +
     scale_y_continuous("", breaks = seq(-1,1,.5), limits = c(-1.1,1.1), labels=percent) +
     xlab("") + ylab("") +
     theme(legend.position="bottom") +
-    scale_x_continuous(breaks=1:length(levels(data_transformed$main$question)), labels=levels(data_transformed$main$question))
+    scale_x_continuous(question_axis_name, breaks=1:length(levels(data_transformed$main$question)), labels=levels(data_transformed$main$question))
+
+   if (show_percent == TRUE) {
+      results_plot_obj <- results_plot_obj + 
+      geom_text(aes(x=as.numeric(question), y=-1.06, label=paste0(round(neg*100), "%")),data=data_transformed$percentages, size=3) +
+      geom_text(aes(x=as.numeric(question), y=1.06, label=paste0(round(pos*100), "%")), data=data_transformed$percentages, size=3)
+    }
+   
 
   if("group" %in% colnames(data_transformed$main)){
     results_plot_obj <- results_plot_obj + facet_wrap(~group, ncol=1)

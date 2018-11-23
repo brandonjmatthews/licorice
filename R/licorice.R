@@ -5,12 +5,14 @@
 #' @param middle_pos a number corresponding to the location at which to center the plot
 #' @param type the type of graph to create (center, fill, count)
 #' @param strwrap_width at what position in the question to place newline characters
+#' @param show_percent show percentages at the ends of each row
+#' @param question_axis_name name for the question axis if required
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr
 #' @import scales
 #' @export
-licorice<-function(data, answers_order = levels(as.factor(data$response)), sort = FALSE, middle_pos = 2.5, type=c("center", "fill", "count"), strwrap_width = 25){
+licorice<-function(data, answers_order = levels(as.factor(data$response)), sort = FALSE, middle_pos = 2.5, type=c("center", "fill", "count"), strwrap_width = 25, show_percent = TRUE, question_axis_name=""){
 
   data_transformed<-transform_data(data, answers_order, sort, middle_pos, strwrap_width)
 
@@ -24,7 +26,7 @@ licorice<-function(data, answers_order = levels(as.factor(data$response)), sort 
 
   } else {
     plot_obj <-
-      licorice_center_plot(data_transformed)
+      licorice_center_plot(data_transformed, show_percent, question_axis_name)
   }
 
   plot_obj
